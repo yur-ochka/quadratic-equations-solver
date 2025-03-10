@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const readline = require("readline");
 
 function solveQuadraticEquation(a, b, c) {
   if (a === 0) {
@@ -29,4 +30,51 @@ function solveQuadraticEquation(a, b, c) {
   }
 }
 
-module.exports = { solveQuadraticEquation };
+function parseNumber(input) {
+  let number = Number(input);
+  if (isNaN(number)) {
+    console.error(`Error. Expected a valid real number, got ${input} instead`);
+    return null;
+  }
+  return number;
+}
+
+function interactiveMode() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  function ask(question, callback) {
+    rl.question(question, (answer) => {
+      let num = parseNumber(answer);
+      if (num !== null) {
+        callback(num);
+      } else {
+        ask(question, callback);
+      }
+    });
+  }
+
+  ask("a = ", (a) => {
+    if (a === 0) {
+      console.error("Error. a cannot be 0");
+      process.exit(1);
+    }
+    ask("b = ", (b) => {
+      ask("c = ", (c) => {
+        rl.close();
+        solveQuadraticEquation(a, b, c);
+      });
+    });
+  });
+}
+
+if (process.argv.length === 2) {
+  interactiveMode();
+} else if (process.argv.length === 3) {
+  fileMode(process.argv[2]);
+} else {
+  console.error("Usage: ./equation [filename]");
+  process.exit(1);
+}
