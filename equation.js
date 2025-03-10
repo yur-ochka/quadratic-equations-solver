@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const readline = require("readline");
-const fs = require("fs");
 
 function solveQuadraticEquation(a, b, c) {
   if (a === 0) {
@@ -69,32 +68,6 @@ function interactiveMode() {
       });
     });
   });
-}
-
-function fileMode(filePath) {
-  if (!fs.existsSync(filePath)) {
-    console.error(`file ${filePath} does not exist`);
-    process.exit(1);
-  }
-
-  const content = fs.readFileSync(filePath, "utf8").trim();
-  const parts = content.split(/\s+/);
-
-  if (parts.length !== 3) {
-    console.error("invalid file format");
-    process.exit(1);
-  }
-
-  let a = parseNumber(parts[0]);
-  let b = parseNumber(parts[1]);
-  let c = parseNumber(parts[2]);
-
-  if (a === null || b === null || c === null) {
-    console.error("invalid file format");
-    process.exit(1);
-  }
-
-  solveQuadraticEquation(a, b, c);
 }
 
 if (process.argv.length === 2) {
